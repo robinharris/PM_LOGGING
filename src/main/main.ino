@@ -43,34 +43,33 @@ void loopGPS(){
 
         Serial.print( F("Location: ") );
         if (fix.valid.location) {
+            // set global variables
+            lat = fix.latitude();
+            lon = fix.longitude();
             Serial.print( fix.latitude(), 6 );
             Serial.print( ',' );
             Serial.print( fix.longitude(), 6 );
-    }
+        }
 
-    Serial.print( F(", Altitude: ") );
-    if (fix.valid.altitude)
-        Serial.print( fix.altitude() );
+        if (fix.valid.altitude){
+            alt = fix.altitude();
+            Serial.print( F(", Altitude: ") );
+            Serial.print( fix.altitude() );
+            Serial.println();
+        }
 
-    Serial.println();
-
-    // set global variables
-    lat = fix.latitude();
-    lon = fix.longitude();
-    alt = fix.altitude();
-
-    // set local variables for date and time
-    year = fix.dateTime.year;
-    mnth = fix.dateTime.month;
-    day = fix.dateTime.day;
-    hr = fix.dateTime.hours;
-    min = fix.dateTime.minutes;
-    sec = fix.dateTime.seconds;
-
-    // create a global timestamp as a string
-    sprintf(timestampString, "%d:%02d:%02d %02d:%02d:%02d", year, mnth, day, hr, min, sec);
-    Serial.println(timestampString);
-    return;
+        // set local variables for date and time
+        if(fix.valid.time){
+            year = fix.dateTime.year;
+            mnth = fix.dateTime.month;
+            day = fix.dateTime.day;
+            hr = fix.dateTime.hours;
+            min = fix.dateTime.minutes;
+            sec = fix.dateTime.seconds;
+            // create a global timestamp as a string
+            sprintf(timestampString, "%d:%02d:%02d %02d:%02d:%02d", year, mnth, day, hr, min, sec);
+            Serial.println(timestampString);
+        }
     }
 }
 
