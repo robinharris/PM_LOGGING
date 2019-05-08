@@ -15,14 +15,12 @@ May 2019
 
 #include <NMEAGPS.h>
 #include <M5Stack.h>
-// #include <GPSport.h>
 
 // globals
 float lat;
 float lon;
 float alt;
 char timestampString [100];
-
 
 NMEAGPS     gps;
 gps_fix     fix;
@@ -46,10 +44,11 @@ void loopGPS(){
             Serial.print( fix.latitude(), 6 );
             Serial.print( ',' );
             Serial.print( fix.longitude(), 6 );
+            M5.Lcd.setTextColor(RED);
+            M5.Lcd.setTextSize(2);
             M5.Lcd.setCursor(5,50);
-            M5.Lcd.printf("Location: ");
             M5.Lcd.print( fix.latitude(), 6 );
-            M5.Lcd.printf( "," );
+            M5.Lcd.printf( "   " );
             M5.Lcd.println( fix.longitude(), 6 );
             M5.update();
         }
@@ -57,7 +56,8 @@ void loopGPS(){
             Serial.print( F(", Altitude: ") );
             Serial.print( fix.altitude() );
             Serial.println();
-            M5.Lcd.printf(", Altitude: ");
+            M5.Lcd.setCursor(5,100);
+            M5.Lcd.printf("Altitude: ");
             M5.Lcd.print( fix.altitude() );
             M5.update();
 
@@ -75,9 +75,9 @@ void loopGPS(){
         sec = fix.dateTime.seconds;
 
         // create a global timestamp as a string
-        sprintf(timestampString, "%d:%02d:%02d %02d:%02d:%02d", year, mnth, day, hr, min, sec);
+        sprintf(timestampString, "%02d:%02d:%d %02d:%02d:%02d", day, mnth, year, hr, min, sec);
         Serial.println(timestampString);
-        M5.Lcd.setCursor(5,100);
+        M5.Lcd.setCursor(5,150);
         M5.Lcd.print(timestampString);
     }
 }
@@ -95,9 +95,11 @@ void setup(){
     Serial.begin(115200);
     Serial2.begin(9600, SERIAL_8N1, 16, 17);
     M5.begin();
-    M5.Lcd.setCursor(5,5);
-    M5.Lcd.setTextSize(2);
-    M5.Lcd.printf("Starting to listen");
+    M5.Lcd.setCursor(100, 5);
+    M5.Lcd.setTextSize(3);
+    M5.Lcd.setTextColor(WHITE);
+
+    M5.Lcd.printf("Location");
     M5.update();
     Serial.println(F("Starting main sketch"));
 }
