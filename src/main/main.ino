@@ -26,8 +26,8 @@ NMEAGPS     gps;
 gps_fix     fix;
 
 void SDS_Setup(){
-    Serial2.begin(9600); // this will default to Serial1 if it exists
-    // this uses AltSoftwareSerial and pins 8 & 9 on an Uno
+    Serial1.begin(9600, SERIAL_8N1, 23, 19);
+    Serial.println("Started Serial1");
 }
 
 void loopGPS(){
@@ -87,21 +87,30 @@ boolean writeToSD(){
 }
 
 void loopSDS(){
-    // receive readings from SDS sensor
+    char incomingChar[5];
+    int availableChars;
+    if(Serial1.available()){
+        availableChars = Serial1.available();
+        for (int i=0; i < availableChars; i++ ){
+            incomingChar[i] = Serial1.read();
+        }
+        int numberOfChars = strlen(incomingChar);
+        incomingChar[numberOfChars + 1]= '\0';
+        Serial.println(incomingChar);
+    }
 }
 
 void setup(){
-    SDS_Setup();
     Serial.begin(115200);
     Serial2.begin(9600, SERIAL_8N1, 16, 17);
     M5.begin();
     M5.Lcd.setCursor(100, 5);
     M5.Lcd.setTextSize(3);
     M5.Lcd.setTextColor(WHITE);
-
     M5.Lcd.printf("Location");
     M5.update();
     Serial.println(F("Starting main sketch"));
+    SDS_Setup();
 }
 
 void loop(){
