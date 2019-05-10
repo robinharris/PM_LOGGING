@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 /* 
 This is the main sketch that drives a portable air quality monitor.
 The components are:
@@ -13,6 +15,7 @@ Author:  Robin Harris
 May 2019
 */
 
+#include <Arduino.h>
 #include <NMEAGPS.h>
 #include <M5Stack.h>
 
@@ -51,6 +54,9 @@ void loopGPS(){
             M5.Lcd.printf( "   " );
             M5.Lcd.println( fix.longitude(), 6 );
             M5.update();
+            // set global variables
+            lat = fix.latitude();
+            lon = fix.longitude();
         }
         if (fix.valid.altitude)
             Serial.print( F(", Altitude: ") );
@@ -59,12 +65,12 @@ void loopGPS(){
             M5.Lcd.setCursor(5,100);
             M5.Lcd.printf("Altitude: ");
             M5.Lcd.print( fix.altitude() );
+            // set global variables
+            alt = fix.altitude();
             M5.update();
 
-        // set global variables
-        lat = fix.latitude();
-        lon = fix.longitude();
-        alt = fix.altitude();
+        if (fix.valid.date)
+
 
         // set local variables for date and time
         year = fix.dateTime.year;
